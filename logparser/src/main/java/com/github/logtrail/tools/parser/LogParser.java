@@ -1,3 +1,5 @@
+package com.github.logtrail.tools.parser;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.slf4j.Logger;

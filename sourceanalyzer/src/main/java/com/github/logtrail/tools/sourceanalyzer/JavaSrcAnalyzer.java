@@ -1,4 +1,4 @@
-package com.github.logminer.sourceanalyzer;
+package com.github.logtrail.tools.sourceanalyzer;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
@@ -120,7 +120,6 @@ public class JavaSrcAnalyzer {
                         JavaSrcAnalyzer.LogStatement logStatement = new JavaSrcAnalyzer.LogStatement();
                         try {
                             logStatement.messageRegEx = convertToRegEx(logString);
-                            logStatement.level = methodName;
                             logStatement.clazz = getLogDeclarationClass(methodCallExpr, classToFieldsMap,file);
                             writer.append(logStatement.toString()).append('\n');
                         } catch (PatternSyntaxException ex) {
@@ -138,7 +137,7 @@ public class JavaSrcAnalyzer {
     //Creates regEx pattern from message with named groups
     private Pattern convertToRegEx(String message) {
         String cleanedUpMessage = REGEX_SPECIAL_CHARS_PATTERN.matcher(message).replaceAll("\\\\$0");
-        cleanedUpMessage = LOG_FORMAT_ELEMENT_PATTERN.matcher(cleanedUpMessage).replaceAll("([\\\\\\\\w]+)");
+        cleanedUpMessage = LOG_FORMAT_ELEMENT_PATTERN.matcher(cleanedUpMessage).replaceAll("([a-zA-Z_0-9 -]+)");
         return Pattern.compile(cleanedUpMessage);
     }
 
@@ -175,11 +174,10 @@ public class JavaSrcAnalyzer {
 
     static class LogStatement {
         private Pattern messageRegEx;
-        private String level;
         private String clazz;
 
         public String toString() {
-            return this.level + "|" + this.clazz + "|" + this.messageRegEx.pattern();
+            return this.clazz + "|" + this.messageRegEx.pattern();
         }
     }
 
